@@ -1,0 +1,20 @@
+# Entornos virtuales
+venv/
+env/
+.env
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Datos (Opcional)
+# Si tu dataset es muy pesado (>50MB), descomenta la siguiente línea:
+# data/*.csv
+
+# Resultados temporales
+__pycache__/
+*.py[cod]
