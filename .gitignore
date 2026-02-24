@@ -12,7 +12,6 @@ env/
 Thumbs.db
 
 # Datos (Opcional)
-# Si tu dataset es muy pesado (>50MB), descomenta la siguiente línea:
 # data/*.csv
 
 # Resultados temporales
