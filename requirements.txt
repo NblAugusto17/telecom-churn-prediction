@@ -11,3 +11,6 @@ joblib==1.5.2
 # Visualización Estadística
 matplotlib==3.10.3
 seaborn==0.13.2
+
+# Despliegue de app web
+streamlit==1.54.0
