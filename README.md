@@ -1,6 +1,15 @@
+<div align="center">
+
 # 📉 **Predictive System for Customer Churn: Interconnect**
 
-**End-to-End Machine Learning Pipeline for Strategic Retention**
+![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python&logoColor=white)
+![CatBoost](https://img.shields.io/badge/CatBoost-Model-orange?style=for-the-badge)
+![Render](https://img.shields.io/badge/Render-Deployed-4353ff?style=for-the-badge&logo=render&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+
+### 🚀 **[ACCEDER A LA APLICACIÓN EN VIVO]**(https://interconnect-churn-app.onrender.com)
+
+</div>
 
 ---
 
