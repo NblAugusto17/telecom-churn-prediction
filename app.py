@@ -3,6 +3,9 @@ import streamlit as st
 import pandas as pd
 import joblib
 import os
+import plotly.express as px
+from catboost import Pool
+import numpy as np
 
 # 1. --- Configuración y carga ---
 st.set_page_config(
@@ -235,3 +238,71 @@ if st.button(label='Analizar Riesgo', use_container_width=True):
             body=f'### CLIENTE ESTABLE: {prob: 2%}'
         )
         st.progress(value=prob)
+
+    # 4.1 --- Explicabilidad XAI ---
+
+    st.markdown(body="---")
+    st.subheader(body='🔍 Diagnóstico: ¿Por qué este resultado?')
+
+    cat_cols_final = [
+        'Type', 'PaperlessBilling', 'PaymentMethod', 'gender', 'Partner',
+        'Dependents', 'InternetService', 'OnlineSecurity', 'OnlineBackup',
+        'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies',
+        'MultipleLines'
+    ]
+
+    try:
+        data_pool = Pool(
+            data=df_input,
+            cat_features=cat_cols_final
+        )
+
+        # 3. EL CAMBIO CLAVE: Usamos 'ShapValues' para XAI local
+        local_imp = model.get_feature_importance(
+            data=data_pool,
+            type='ShapValues'
+        )
+
+        # 4. Procesamos los datos (ShapValues devuelve matriz [n_muestras, n_features + 1])
+        # Tomamos la primera fila (0) y todos los valores menos el último ([:-1])
+        val_impacto = local_imp[0][:-1]
+
+        imp_df = pd.DataFrame(data={
+            'Factor': schema,
+            'Impacto': val_impacto
+        })
+
+        # Tomamos los 5 que más influyen usando el valor absoluto para rankear
+        top_5_imp = imp_df.reindex(
+            labels=imp_df['Impacto'].abs().sort_values(ascending=False).index
+        ).head(n=5)
+
+        # 5. Creamos el gráfico con Plotly
+        fig_imp = px.bar(
+            data_frame=top_5_imp,
+            x='Impacto',
+            y='Factor',
+            orientation='h',
+            color='Impacto',
+            color_continuous_scale='RdYlGn_r',
+            template='plotly_dark',
+            title='FACTORES CLAVE EN ESTA PREDICCIÓN',
+            labels={'Impacto': 'Contribución', 'Factor': 'Variable'}
+        )
+
+        fig_imp.update_layout(
+            showlegend=False,
+            height=400,
+            coloraxis_showscale=False,
+            margin=dict(l=20, r=20, t=50, b=20)
+        )
+
+        st.plotly_chart(figure_or_data=fig_imp, use_container_width=True)
+
+        st.info(
+            body="💡 **Valor para el Negocio:** Las barras rojas aumentan la probabilidad de fuga, "
+                 "mientras que las verdes ayudan a retener al cliente."
+        )
+
+    except Exception as e:
+        st.error(body=f"Error técnico en el diagnóstico: {e}")
